@@ -35,6 +35,7 @@ export const EmailSender = ({
   dateEnd,
   comments,
   prod,
+  desc,
   count,
   price,
 }) => {
@@ -49,6 +50,7 @@ export const EmailSender = ({
     <p>dateEnd: <i>${dateEnd}</i></p>
     <p>comments: <i>${comments}</i></p>
     <p>prod: <i>${prod}</i></p>
+    <p>desc: <i>${desc}</i></p>
     <p>count: <i>${count}</i></p>
     <p>price: <i>${price}</i></p>`,
   };

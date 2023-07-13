@@ -19,6 +19,7 @@ app.post("/send", async (req, res) => {
       dateEnd,
       comments,
       prod,
+      desc,
       count,
       price,
     } = req.body;
@@ -31,6 +32,7 @@ app.post("/send", async (req, res) => {
       dateEnd,
       comments,
       prod,
+      desc,
       count,
       price,
     });
