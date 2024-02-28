@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://yourfrontenddomain.com", "http://localhost:3000"],
+    origin: ["https://www.adjarapeak.ge", "http://localhost:3000"],
   })
 );
 
