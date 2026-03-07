@@ -2,7 +2,9 @@ import nodemailer from "nodemailer";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-console.log("MAIL: transporter init");
+console.log("MAIL STEP 1: file loaded");
+console.log("MAIL STEP 2: USER exists =", !!process.env.USER);
+console.log("MAIL STEP 3: PASSWORD exists =", !!process.env.PASSWORD);
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -12,43 +14,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const EmailSender = async ({
-  name,
-  phone,
-  telegram,
-  dateStart,
-  dateEnd,
-  comments,
-  prod,
-  desc,
-  count,
-  price,
-}) => {
-  try {
-    console.log("MAIL: send started");
+console.log("MAIL STEP 4: transporter created");
 
-    const info = await transporter.sendMail({
-      from: process.env.USER,
-      to: process.env.USER,
-      subject: "ЗАКАЗ",
-      html: `
-        <p>FullName: <b>${name || ""}</b></p>
-        <p>Phone: <b>${phone || ""}</b></p>
-        <p>Telegram: <b>${telegram || ""}</b></p>
-        <p>dateStart: <b>${dateStart || ""}</b></p>
-        <p>dateEnd: <i>${dateEnd || ""}</i></p>
-        <p>comments: <i>${comments || ""}</i></p>
-        <p>prod: <i>${prod || ""}</i></p>
-        <p>desc: <i>${desc || ""}</i></p>
-        <p>count: <i>${count || ""}</i></p>
-        <p>price: <i>${price || ""}</i></p>
-      `,
-    });
-
-    console.log("MAIL: sent", info.messageId);
-    return info;
-  } catch (error) {
-    console.error("MAIL ERROR:", error);
-    throw error;
-  }
+export const EmailSender = async (data) => {
+  console.log("MAIL STEP 5: EmailSender called");
+  return transporter.sendMail({
+    from: process.env.USER,
+    to: process.env.USER,
+    subject: "ЗАКАЗ",
+    html: `<p>test</p>`,
+  });
 };

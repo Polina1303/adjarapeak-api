@@ -1,49 +1,30 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
-import cors from "cors";
-import { EmailSender } from "./sendEmail.js";
+console.log("STEP 1: dotenv loaded");
 
-console.log("BOOT: app starting...");
-console.log("BOOT: process.env.PORT =", process.env.PORT);
-console.log("BOOT: USER =", process.env.USER ? "exists" : "missing");
-console.log("BOOT: PASSWORD =", process.env.PASSWORD ? "exists" : "missing");
+import express from "express";
+console.log("STEP 2: express imported");
+
+import cors from "cors";
+console.log("STEP 3: cors imported");
+
+import { EmailSender } from "./sendEmail.js";
+console.log("STEP 4: sendEmail imported");
 
 const app = express();
+console.log("STEP 5: app created");
 
-const corsOptions = {
-  origin: ["https://www.adjarapeak.ge", "http://localhost:3000"],
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 app.use(express.json());
+console.log("STEP 6: express.json added");
 
 app.get("/", (_, res) => {
-  console.log("GET / called");
-  res.status(200).send("API is running");
-});
-
-app.post("/send", async (req, res) => {
-  try {
-    console.log("POST /send called");
-    await EmailSender(req.body);
-    console.log("POST /send success");
-    res.status(200).json({ message: "ok" });
-  } catch (error) {
-    console.error("POST /send failed:", error);
-    res.status(500).json({ message: "Error sending email" });
-  }
+  res.send("API is running");
 });
 
 const PORT = process.env.PORT || 5001;
+console.log("STEP 7: PORT =", PORT);
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`listening on ${PORT}`);
+  console.log(`STEP 8: listening on ${PORT}`);
 });
-
-console.log("BOOT: PORT source value =", JSON.stringify(process.env.PORT));
-console.log("BOOT: running on Railway =", !!process.env.RAILWAY_PROJECT_ID);
