@@ -7,23 +7,20 @@ import { EmailSender } from "./sendEmail.js";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ["https://www.adjarapeak.ge", "http://localhost:3000"],
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+const corsOptions = {
+  origin: ["https://www.adjarapeak.ge", "http://localhost:3000"],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.status(200).send("OK");
-});
+const PORT = process.env.PORT || 8080;
 
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+app.get("/", (_, res) => {
+  res.status(200).send("API is running");
 });
 
 app.post("/send", async (req, res) => {
@@ -54,17 +51,15 @@ app.post("/send", async (req, res) => {
       price,
     });
 
-    return res.status(200).json({ message: "ok" });
+    res.status(200).json({ message: "ok" });
   } catch (error) {
-    console.error("POST /send error:", error);
-    return res.status(500).json({
-      message: error?.message || "Email sending failed",
-    });
+    console.error("SEND ERROR:", error);
+    res.status(500).json({ message: "Error sending email" });
   }
 });
-
-const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`listening on ${PORT}`);
 });
+
+export default app;
