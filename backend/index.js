@@ -1,53 +1,6 @@
-// import * as dotenv from "dotenv";
-// dotenv.config();
-// import express from "express";
-// import cors from "cors";
-// import { EmailSender } from "./sendEmail.js";
-
-// const app = express();
-// app.use(express.json());
-// app.use(cors());
-
-// const PORT = process.env.PORT || 5001;
-// app.post("/send", async (req, res) => {
-//   try {
-//     const {
-//       name,
-//       phone,
-//       telegram,
-//       dateStart,
-//       dateEnd,
-//       comments,
-//       prod,
-//       desc,
-//       count,
-//       price,
-//     } = req.body;
-
-//     EmailSender({
-//       name,
-//       phone,
-//       telegram,
-//       dateStart,
-//       dateEnd,
-//       comments,
-//       prod,
-//       desc,
-//       count,
-//       price,
-//     });
-//     res.json({ msg: "ok" });
-//   } catch (error) {
-//     res.status(404).json({ msg: "Error" });
-//   }
-// });
-
-// app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
-// export default app;
-
 import * as dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import { EmailSender } from "./sendEmail.js";
@@ -65,7 +18,13 @@ app.use(
 app.options("*", cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 5001;
+app.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 app.post("/send", async (req, res) => {
   try {
@@ -95,17 +54,17 @@ app.post("/send", async (req, res) => {
       price,
     });
 
-    res.status(200).json({ message: "ok" });
+    return res.status(200).json({ message: "ok" });
   } catch (error) {
-    console.error("SEND ERROR:", error);
-    res.status(500).json({ message: "Error sending email" });
+    console.error("POST /send error:", error);
+    return res.status(500).json({
+      message: error?.message || "Email sending failed",
+    });
   }
 });
 
-app.get("/", (_, res) => {
-  res.send("API is running");
+const PORT = process.env.PORT || 5001;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`listening on ${PORT}`);
 });
-
-app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
-export default app;
