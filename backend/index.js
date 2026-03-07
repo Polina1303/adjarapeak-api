@@ -44,3 +44,6 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`listening on ${PORT}`);
 });
+
+console.log("BOOT: PORT source value =", JSON.stringify(process.env.PORT));
+console.log("BOOT: running on Railway =", !!process.env.RAILWAY_PROJECT_ID);
