@@ -1,30 +1,51 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-
-console.log("STEP 1: dotenv loaded");
-
 import express from "express";
-console.log("STEP 2: express imported");
-
 import cors from "cors";
-console.log("STEP 3: cors imported");
-
 import { EmailSender } from "./sendEmail.js";
-console.log("STEP 4: sendEmail imported");
 
 const app = express();
-console.log("STEP 5: app created");
-
 app.use(express.json());
-console.log("STEP 6: express.json added");
-
-app.get("/", (_, res) => {
-  res.send("API is running");
-});
+app.use(
+  cors({
+    origin: ["https://www.adjarapeak.ge", "http://localhost:3000"],
+  })
+);
 
 const PORT = process.env.PORT || 5001;
-console.log("STEP 7: PORT =", PORT);
+app.post("/send", async (req, res) => {
+  try {
+    const {
+      name,
+      phone,
+      telegram,
+      dateStart,
+      dateEnd,
+      comments,
+      prod,
+      desc,
+      count,
+      price,
+    } = req.body;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`STEP 8: listening on ${PORT}`);
+    EmailSender({
+      name,
+      phone,
+      telegram,
+      dateStart,
+      dateEnd,
+      comments,
+      prod,
+      desc,
+      count,
+      price,
+    });
+    res.json({ msg: "ok" });
+  } catch (error) {
+    res.status(404).json({ msg: "Error" });
+  }
 });
+
+app.listen(PORT, () => console.log(`listening on ${PORT}`));
+
+export default app;
