@@ -2,10 +2,14 @@ import { Resend } from "resend";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-// Инициализация Resend с API ключом
+// Проверим, загрузился ли ключ
+console.log(
+  "🔑 RESEND_API_KEY загружен:",
+  process.env.RESEND_API_KEY ? "✅ Да" : "❌ Нет"
+);
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Функция отправки email
 export const EmailSender = async ({
   name,
   phone,
@@ -18,8 +22,10 @@ export const EmailSender = async ({
   count,
   price,
 }) => {
+  console.log("📧 Попытка отправки email...");
+  console.log("📨 Данные:", { name, phone, prod });
+
   try {
-    // Формируем HTML красивее (опционально)
     const htmlContent = `
       <h2>Новый заказ с сайта</h2>
       <p><strong>Имя:</strong> ${name}</p>
@@ -34,22 +40,29 @@ export const EmailSender = async ({
       <p><strong>Комментарии:</strong> ${comments}</p>
     `;
 
+    console.log("📤 Отправка через Resend...");
+
     const { data, error } = await resend.emails.send({
-      from: "Заказы <onboarding@resend.dev>", // Временно, потом заменишь на свой домен
-      to: [process.env.USER], // Твой email получателя
+      from: "Заказы <onboarding@resend.dev>",
+      to: [process.env.RECIPIENT_EMAIL || process.env.USER], // Используем RECIPIENT_EMAIL или старый USER
       subject: "НОВЫЙ ЗАКАЗ С САЙТА",
       html: htmlContent,
     });
 
     if (error) {
-      console.error("Ошибка отправки через Resend:", error);
+      console.error("❌ Resend ошибка:", error);
       throw error;
     }
 
-    console.log("Email отправлен успешно! ID:", data?.id);
+    console.log("✅ Email отправлен успешно! ID:", data?.id);
     return { success: true, data };
   } catch (error) {
-    console.error("Ошибка в EmailSender:", error);
-    throw error;
+    console.error("❌ Ошибка в EmailSender:", error);
+    console.error("Детали ошибки:", {
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+    });
+    throw error; // Пробрасываем ошибку дальше
   }
 };
