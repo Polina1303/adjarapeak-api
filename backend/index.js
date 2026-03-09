@@ -12,7 +12,6 @@ app.use(
   })
 );
 
-const PORT = process.env.PORT || 5000;
 app.post("/send", async (req, res) => {
   try {
     const {
@@ -46,6 +45,9 @@ app.post("/send", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
+const PORT = process.env.PORT || 5000;
+console.log("ENV PORT =", process.env.PORT);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("listening on", PORT);
+});
 export default app;
